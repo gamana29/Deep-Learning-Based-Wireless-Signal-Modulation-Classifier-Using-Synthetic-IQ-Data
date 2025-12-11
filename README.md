@@ -1,163 +1,263 @@
+# 📡 Deep Learning–Based Wireless Signal Modulation Classifier  
+### Using Synthetic IQ Data (AM, FM, BPSK, QPSK, 16-QAM, FSK)
 
-⭐ Deep Learning–Based Wireless Signal Modulation Classifier
-Using Synthetic IQ Data (AM, FM, BPSK, QPSK, QAM, FSK)
+[![Python](https://img.shields.io/badge/Python-3.x-blue)]()
+[![MATLAB/Octave](https://img.shields.io/badge/MATLAB/Octave-Signal%20Generation-orange)]()
+[![Google Colab](https://img.shields.io/badge/Training-Google%20Colab-green)]()
+[![GNU Radio](https://img.shields.io/badge/GNU%20Radio-Optional-yellow)]()
+[![DL Model](https://img.shields.io/badge/Model-CNN%2BLSTM-red)]()
 
-This project demonstrates a deep learning–based modulation classifier using synthetic baseband IQ signals, trained in Google Colab, and optionally testable using GNU Radio Companion.
+---
 
-The goal is to classify signals such as:
+## 📘 **Project Overview**
 
-Modulation	Included?
-AM	✔
-FM	✔
-BPSK	✔
-QPSK	✔
-16-QAM	✔
-FSK	✔
+This project demonstrates a **deep learning–based modulation classifier** that identifies wireless signal modulation types using **synthetic baseband IQ samples**.
 
-The model is trained on synthetically generated IQ data, allowing training without SDR hardware.
+The entire pipeline is designed so you can train and test a modulation classifier **without any SDR hardware**.  
+(Though optional GNU Radio support is included for real-world testing.)
 
-📁 Project Structure
-Deep-Learning-Based-Wireless-Signal-Modulation-Classifier/
+### ✔ Modulations Included
+
+| Modulation | Support |
+|-----------|---------|
+| AM        | ✔ |
+| FM        | ✔ |
+| BPSK      | ✔ |
+| QPSK      | ✔ |
+| 16-QAM    | ✔ |
+| FSK       | ✔ |
+
+---
+
+## 🌐 **Flow of the Entire Project**
+
+### **1️⃣ IQ Signal Generation (Octave / MATLAB)**  
+- Generate clean baseband IQ samples  
+- Apply modulation (AM, FM, BPSK, QPSK, QAM, FSK)  
+- Normalize signals  
+- Export `.mat` / `.npy`
+
+### **2️⃣ Channel Impairments Added**
+- AWGN (SNR from −20dB to +20dB)  
+- Carrier frequency offset  
+- Phase noise  
+- Multipath fading (optional)
+
+### **3️⃣ Dataset Preparation**
+- Convert signals → shape **(Samples, 2)** for (I, Q)  
+- One-hot encode labels  
+- Train/test split  
+- Save dataset in `dataset/`
+
+### **4️⃣ Deep Learning Model**
+- CNN + LSTM hybrid  
+- Input: IQ sequence  
+- Output: 6 modulation classes  
+- Trained in Google Colab GPU  
+
+### **5️⃣ Evaluation**
+- Accuracy  
+- Loss curves  
+- Confusion matrix  
+- Accuracy vs SNR  
+
+### **6️⃣ Optional GNU Radio Testing**
+If you have RTL-SDR → test OTA  
+If you don’t → use GNU Radio to generate baseband synthetic IQ & evaluate.
+
+---
+
+## 🛠️ Tools Used
+
+### **Required**
+- **MATLAB / Octave**
+  - Synthetic IQ signal generator
+- **Python + TensorFlow/Keras**
+  - Model development
+- **Google Colab**
+  - GPU training environment
+
+### **Optional**
+- **GNU Radio (No SDR Required)**
+  - Create test waveforms (AM/FM/PSK/QAM)
+  - Visualize spectra
+  - Export IQ `.bin` for inference
+
+- **RTL-SDR (Optional)**
+  - Real-world RF signal capture
+
+---
+
+## 📦 Linux Setup & Installation
+
+### **1️⃣ Install Octave (if no MATLAB)**
+
+```bash
+sudo apt update
+sudo apt install octave octave-signal octave-communications
+
+```
+
+### **2️⃣ Install Python Dependencies**
+
+```bash
+sudo apt install python3 python3-pip
+pip install numpy scipy matplotlib tensorflow keras scikit-learn
+
+```
+
+### **3️⃣ Install GNU Radio (Optional)**
+
+```bash
+sudo apt install gnuradio
+
+```
+
+### **4️⃣ Clone the Repository**
+
+```bash
+git clone https://github.com/gamana29/Deep-Learning-Based-Wireless-Signal-Modulation-Classifier-Using-Synthetic-IQ-Data.git
+cd Deep-Learning-Based-Wireless-Signal-Modulation-Classifier-Using-Synthetic-IQ-Data
+
+
+```
+---
+
+### **📁 Project Structure**
+
+```bash
+Deep-Learning-Modulation-Classifier/
 │
-├── colab/                # Google Colab training notebooks
+├── colab/
 │   └── modulation_training.ipynb
 │
-├── dataset/              # Generated IQ datasets (.npy)
+├── dataset/
+│   └── *.npy   # Generated IQ datasets
 │
-├── models/               # Saved models (.h5, .tflite, .onnx)
+├── models/
 │   └── modulation_cnn.h5
 │
-├── src/                  # Python source code for training/testing
+├── src/
 │   ├── data_generator.py
 │   ├── model_cnn.py
 │   ├── train.py
 │   └── evaluate.py
 │
-├── gnu_radio/            # GNU Radio flowgraphs
+├── gnu_radio/
 │   └── modulation_test.grc
 │
-├── results/              # Accuracy plots, confusion matrix
+├── results/
+│   └── accuracy_plots.png
 │
-├── docs/                 # Documentation
+├── docs/
 │
-├── README.md
-└── .gitignore
+└── README.md
 
-🚀 Features
-✔ Synthetic IQ Signal Generator
+```
+---
+📊 Model Architecture
+---------------------
 
-Generates AM, FM, PSK, QAM, FSK
+### **CNN + LSTM Hybrid Network**
 
-Adds AWGN noise with configurable SNR
+This project uses a hybrid deep learning architecture combining **Convolutional Neural Networks (CNNs)** and **Long Short-Term Memory (LSTM)** layers.
 
-Frequency/phase offsets
+#### **Why CNN + LSTM?**
+- **CNN layers** extract meaningful temporal features from IQ samples  
+- **LSTM layers** learn long-term dependencies such as phase continuity  
+- **Dense softmax layer** produces the final modulation class prediction  
 
-Multipath fading (optional)
+#### **Architecture Summary**
+- Input shape: **(2048, 2)** → I/Q samples  
+- Conv1D → MaxPool  
+- Conv1D → MaxPool  
+- LSTM layer  
+- Dense (ReLU)  
+- Dense Softmax (6-class output)
 
-✔ Deep Learning Classifier
+---
 
-CNN + LSTM hybrid architecture
+🚀 Training in Google Colab
+---------------------------
 
-Input: (I, Q) samples
+Open the notebook:
 
-Output: modulation class label
+## colab/modulation_training.ipynb
 
-✔ Evaluation
-
-Test accuracy
-
-Confusion matrix
-
-Accuracy vs. SNR curves
-
-✔ GNU Radio Integration
-
-Load signals into GRC
-
-Visualize spectrogram/FFT
-
-Simulate wireless channel (no SDR needed)
-
-🧠 Model File
-
-This repo includes:
-
-models/modulation_cnn.h5
+### **What the Notebook Does**
+✔ Generates synthetic IQ signals (AM, FM, BPSK, QPSK, QAM16, FSK)  
+✔ Adds channels: AWGN noise, fading, frequency offset  
+✔ Splits data into train/test sets  
+✔ Builds CNN + LSTM deep learning model  
+✔ Trains for 20 epochs (configurable)  
+✔ Saves trained model:  
 
 
-This saved model can be loaded in Python:
+## models/modulation_cnn.h5
+✔ Plots:
+- Accuracy & loss curves  
+- Confusion matrix  
+- Accuracy vs SNR  
+
+---
+
+## **🧪 Model Evaluation**
+-------------------
+
+Use:
+```bash
+python3 src/evaluate.py
+```
+## **Evaluation includes:**
+
+✔ Accuracy
+✔ Loss
+✔ Per-class accuracy
+✔ Confusion matrix
+✔ Accuracy vs SNR
+
+## **Example inference:**
+
+```bash
 
 from tensorflow.keras.models import load_model
-model = load_model("models/modulation_cnn.h5")
-
-🧪 Testing With GNU Radio (NO SDR NEEDED)
-
-You can generate test waveforms using:
-
-Required Blocks:
-
-✔ Signal Source
-✔ Modulate (AM/FM/PSK/QAM)
-✔ Throttle
-✔ QT GUI Time Sink
-✔ File Sink (export .bin IQ)
-
-Then test in Python:
-
 import numpy as np
-iq = np.fromfile("gnu_radio/output.bin", dtype=np.complex64)
-pred = model.predict(iq.reshape(1, -1, 2))
 
-📌 How to Train in Google Colab
+model = load_model("models/modulation_cnn.h5")
+iq = np.load("sample.npy")
 
-Open:
+prediction = model.predict(iq.reshape(1,2048,2))
+print("Predicted:", np.argmax(prediction))
 
-colab/modulation_training.ipynb
+```
+---
 
+### **GNU Radio Testing(Optional)**
+------------------
+You can test your trained model with GNU Radio.
 
-Run all cells to:
+**Blocks required:**
 
-✔ Generate dataset
-✔ Train model
-✔ Save model
-✔ Plot results
+-Signal Source -- > Modulator Block (AM/FM/QPSK/QAM) --> Throttle --> Time Sink --> File Sink --> output.bin
 
-📈 Example Results
+## Load .bin file:
 
-CNN Accuracy: 94–98% (SNR ≥ 0 dB)
+```bash
+iq = np.fromfile("output.bin", dtype=np.complex64)
+iq = np.column_stack((iq.real, iq.imag))
+pred = model.predict(iq.reshape(1,2048,2))
 
-Robust to noise & frequency offset
+```
+---
 
-Fast real-time inference
+### **📈 Results**
+----------------
+- 94–98% accuracy (SNR ≥ 0 dB)
+- Robust against noise & offsets
+- Works on both synthetic & GNU Radio waveforms
 
-🧑‍💻 Author
-
-Gamana
-Deep Learning & Wireless Signal Processing Research
-
-⭐ How to Cite
-Gamana (2025). Deep Learning–Based Wireless Signal Modulation Classifier Using Synthetic IQ Data.
-GitHub: https://github.com/gamana29/Deep-Learning-Based-Wireless-Signal-Modulation-Classifier-Using-Synthetic-IQ-Data
-
-🚀 Future Work
-
-Add RNN/Transformer model
-
-Real OTA dataset (RTL-SDR/PlutoSDR)
-
-Deploy on mobile/edge TPUs
-
-🙌 Contributions Welcome!
-
-Feel free to submit PRs or raise issues.
+---
 
 
-👏 Star the Repo If You Found It Useful!
-✅ 4. Add Files to GitHub
 
-Now run:
-
-git add .
-git commit -m "Added project structure and README"
-git push -u origin main
 
