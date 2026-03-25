@@ -60,6 +60,8 @@ The entire pipeline is designed so you can train and test a modulation classifie
 - Loss curves  
 - Confusion matrix  
 - Accuracy vs SNR  
+<img width="822" height="675" alt="image" src="https://github.com/user-attachments/assets/23ceeeb8-d425-4251-8eb9-f42fda0795df" />
+
 
 ### **6️⃣ Optional GNU Radio Testing**
 If you have RTL-SDR → test OTA  
