@@ -1,4 +1,4 @@
-# 📡 Deep Learning–Based Wireless Signal Modulation Classifier  
+#  Deep Learning–Based Wireless Signal Modulation Classifier  
 ### Using Synthetic IQ Data (AM, FM, BPSK, QPSK, 16-QAM, FSK)
 
 [![Python](https://img.shields.io/badge/Python-3.x-blue)]()
@@ -9,14 +9,14 @@
 
 ---
 
-## 📘 **Project Overview**
+##  **Project Overview**
 
 This project demonstrates a **deep learning–based modulation classifier** that identifies wireless signal modulation types using **synthetic baseband IQ samples**.
 
 The entire pipeline is designed so you can train and test a modulation classifier **without any SDR hardware**.  
 (Though optional GNU Radio support is included for real-world testing.)
 
-### ✔ Modulations Included
+###  Modulations Included
 
 | Modulation | Support |
 |-----------|---------|
@@ -29,33 +29,33 @@ The entire pipeline is designed so you can train and test a modulation classifie
 
 ---
 
-## 🌐 **Flow of the Entire Project**
+##  **Flow of the Entire Project**
 
-### **1️⃣ IQ Signal Generation (Octave / MATLAB)**  
+### **1️ IQ Signal Generation (Octave / MATLAB)**  
 - Generate clean baseband IQ samples  
 - Apply modulation (AM, FM, BPSK, QPSK, QAM, FSK)  
 - Normalize signals  
 - Export `.mat` / `.npy`
 
-### **2️⃣ Channel Impairments Added**
+### **2️ Channel Impairments Added**
 - AWGN (SNR from −20dB to +20dB)  
 - Carrier frequency offset  
 - Phase noise  
 - Multipath fading (optional)
 
-### **3️⃣ Dataset Preparation**
+### **3️ Dataset Preparation**
 - Convert signals → shape **(Samples, 2)** for (I, Q)  
 - One-hot encode labels  
 - Train/test split  
 - Save dataset in `dataset/`
 
-### **4️⃣ Deep Learning Model**
+### **4️ Deep Learning Model**
 - CNN + LSTM hybrid  
 - Input: IQ sequence  
 - Output: 6 modulation classes  
 - Trained in Google Colab GPU  
 
-### **5️⃣ Evaluation**
+### **5️ Evaluation**
 - Accuracy  
 - Loss curves  
 - Confusion matrix  
@@ -63,13 +63,13 @@ The entire pipeline is designed so you can train and test a modulation classifie
 <img width="822" height="675" alt="image" src="https://github.com/user-attachments/assets/23ceeeb8-d425-4251-8eb9-f42fda0795df" />
 
 
-### **6️⃣ Optional GNU Radio Testing**
+### **6️ Optional GNU Radio Testing**
 If you have RTL-SDR → test OTA  
 If you don’t → use GNU Radio to generate baseband synthetic IQ & evaluate.
 
 ---
 
-## 🛠️ Tools Used
+##  Tools Used
 
 ### **Required**
 - **MATLAB / Octave**
@@ -90,9 +90,9 @@ If you don’t → use GNU Radio to generate baseband synthetic IQ & evaluate.
 
 ---
 
-## 📦 Linux Setup & Installation
+##  Linux Setup & Installation
 
-### **1️⃣ Install Octave (if no MATLAB)**
+### **1️ Install Octave (if no MATLAB)**
 
 ```bash
 sudo apt update
@@ -100,7 +100,7 @@ sudo apt install octave octave-signal octave-communications
 
 ```
 
-### **2️⃣ Install Python Dependencies**
+### **2️ Install Python Dependencies**
 
 ```bash
 sudo apt install python3 python3-pip
@@ -108,14 +108,14 @@ pip install numpy scipy matplotlib tensorflow keras scikit-learn
 
 ```
 
-### **3️⃣ Install GNU Radio (Optional)**
+### **3️ Install GNU Radio (Optional)**
 
 ```bash
 sudo apt install gnuradio
 
 ```
 
-### **4️⃣ Clone the Repository**
+### **4️ Clone the Repository**
 
 ```bash
 git clone https://github.com/gamana29/Deep-Learning-Based-Wireless-Signal-Modulation-Classifier-Using-Synthetic-IQ-Data.git
@@ -125,7 +125,7 @@ cd Deep-Learning-Based-Wireless-Signal-Modulation-Classifier-Using-Synthetic-IQ-
 ```
 ---
 
-### **📁 Project Structure**
+### ** Project Structure**
 
 ```bash
 Deep-Learning-Modulation-Classifier/
@@ -157,7 +157,7 @@ Deep-Learning-Modulation-Classifier/
 
 ```
 ---
-📊 Model Architecture
+ Model Architecture
 ---------------------
 
 ### **CNN + LSTM Hybrid Network**
@@ -179,7 +179,7 @@ This project uses a hybrid deep learning architecture combining **Convolutional 
 
 ---
 
-🚀 Training in Google Colab
+ Training in Google Colab
 ---------------------------
 
 Open the notebook:
@@ -203,7 +203,7 @@ Open the notebook:
 
 ---
 
-## **🧪 Model Evaluation**
+## ** Model Evaluation**
 -------------------
 
 Use:
@@ -252,7 +252,7 @@ pred = model.predict(iq.reshape(1,2048,2))
 ```
 ---
 
-### **📈 Results**
+### ** Results**
 ----------------
 - 94–98% accuracy (SNR ≥ 0 dB)
 - Robust against noise & offsets
